@@ -386,9 +386,6 @@ object Umlagerung_T: TUmlagerung_T
         Navigator.Buttons.CustomButtons = <>
         ScrollbarAnnotations.CustomAnnotations = <>
         OnCanFocusRecord = TableViewCanFocusRecord
-        OnCanSelectRecord = TableViewCanSelectRecord
-        OnFocusedRecordChanged = TableViewFocusedRecordChanged
-        OnSelectionChanged = TableViewSelectionChanged
         DataController.DataSource = DataSource
         DataController.KeyFieldNames = 'id'
         DataController.Summary.DefaultGroupSummaryItems = <>
@@ -419,7 +416,6 @@ object Umlagerung_T: TUmlagerung_T
           Caption = 'U'
           DataBinding.FieldName = 'u'
           PropertiesClassName = 'TcxCheckBoxProperties'
-          Properties.OnEditValueChanged = TableViewuPropertiesEditValueChanged
           OnGetStoredProperties = TableViewkArtikelGetStoredProperties
           OnGetStoredPropertyValue = TableViewkArtikelGetStoredPropertyValue
           OnSetStoredPropertyValue = TableViewcArtNrSetStoredPropertyValue
@@ -472,6 +468,25 @@ object Umlagerung_T: TUmlagerung_T
           Styles.Header = StyleHeader
           Width = 401
         end
+        object TableViewKarton: TcxGridDBColumn
+          DataBinding.FieldName = 'Karton'
+          HeaderAlignmentHorz = taCenter
+          Width = 79
+        end
+        object TableViewRQty: TcxGridDBColumn
+          DataBinding.FieldName = 'RQty'
+          HeaderAlignmentHorz = taCenter
+          Width = 92
+        end
+        object TableViewDatum: TcxGridDBColumn
+          DataBinding.FieldName = 'Datum'
+          HeaderAlignmentHorz = taCenter
+        end
+        object TableViewVPEMenge: TcxGridDBColumn
+          DataBinding.FieldName = 'VPEMenge'
+          HeaderAlignmentHorz = taCenter
+          Width = 95
+        end
         object TableViewFBA: TcxGridDBColumn
           DataBinding.FieldName = 'FBA'
           OnGetStoredProperties = TableViewkArtikelGetStoredProperties
@@ -492,6 +507,7 @@ object Umlagerung_T: TUmlagerung_T
           HeaderAlignmentHorz = taCenter
           HeaderGlyphAlignmentHorz = taCenter
           Styles.Content = U_Menge
+          Styles.OnGetContentStyle = TableViewUMengeStylesGetContentStyle
         end
         object TableViewFBABestand: TcxGridDBColumn
           DataBinding.FieldName = 'FBA-Bestand'
@@ -1142,12 +1158,12 @@ object Umlagerung_T: TUmlagerung_T
       '  where nIstVater = 1'
       '  and kStueckliste = 0'
       '')
-    Left = 784
-    Top = 136
+    Left = 656
+    Top = 200
   end
   object dsArtike: TDataSource
     DataSet = qArtike
-    Left = 712
+    Left = 656
     Top = 136
   end
   object FDTable: TFDTable
@@ -1168,7 +1184,7 @@ object Umlagerung_T: TUmlagerung_T
     UpdateOptions.AutoCommitUpdates = True
     UpdateOptions.UpdateTableName = '[Umlagerung].[dbo].[pArtikel] '
     UpdateOptions.KeyFields = 'id'
-    TableName = '[Umlagerung].[dbo].[pArtikel]'
+    TableName = 'Umlagerung.dbo.[pArtikel]'
     Left = 640
     Top = 369
     object FDTableu: TBooleanField
@@ -1310,6 +1326,18 @@ object Umlagerung_T: TUmlagerung_T
       FieldName = 'UmlagDatum'
       Origin = 'UmlagDatum'
     end
+    object FDTableRQty: TIntegerField
+      FieldName = 'RQty'
+    end
+    object FDTableDatum: TDateField
+      FieldName = 'Datum'
+    end
+    object FDTableKarton: TFloatField
+      FieldName = 'Karton'
+    end
+    object FDTableVPEMenge: TFloatField
+      FieldName = 'VPEMenge'
+    end
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 72
@@ -1379,6 +1407,10 @@ object Umlagerung_T: TUmlagerung_T
       AssignedValues = [svColor]
       Color = clBtnFace
     end
+    object cxStyleMenge: TcxStyle
+      AssignedValues = [svColor]
+      Color = clYellow
+    end
   end
   object qReportA4: TFDQuery
     Connection = DataModule1.FDConnection
@@ -1386,7 +1418,9 @@ object Umlagerung_T: TUmlagerung_T
       'use [Umlagerung];'
       ''
       ''
-      'SELECT a.[id],a.[cName],a.[U-Menge] UMenge, a.cBarcode'
+      
+        'SELECT a.[id],a.[cName],a.[U-Menge] UMenge, a.cBarcode, (a.[U-Me' +
+        'nge] / a.VPEMenge) as Kartons'
       '  FROM [pArtikel] a (nolock) '
       ' inner join tMark t (nolock) '
       '         on t.id = a.id'
@@ -1692,7 +1726,7 @@ object Umlagerung_T: TUmlagerung_T
         mmHeight = 4763
         mmLeft = 0
         mmTop = 8202
-        mmWidth = 154782
+        mmWidth = 121444
         BandType = 0
         LayerName = Foreground1
       end
@@ -1712,9 +1746,31 @@ object Umlagerung_T: TUmlagerung_T
         FormFieldSettings.FormFieldType = fftNone
         TextAlignment = taCentered
         mmHeight = 4763
-        mmLeft = 155046
+        mmLeft = 121444
         mmTop = 8202
-        mmWidth = 42069
+        mmWidth = 37835
+        BandType = 0
+        LayerName = Foreground1
+      end
+      object ppLabel3: TppLabel
+        DesignLayer = ppDesignLayer2
+        UserName = 'Label3'
+        AutoSize = False
+        Border.mmPadding = 0
+        Caption = 'Kartons'
+        Color = clInactiveCaption
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Name = 'Arial'
+        Font.Size = 12
+        Font.Style = []
+        FormFieldSettings.FormSubmitInfo.SubmitMethod = fstPost
+        FormFieldSettings.FormFieldType = fftNone
+        TextAlignment = taCentered
+        mmHeight = 4763
+        mmLeft = 159279
+        mmTop = 8202
+        mmWidth = 37835
         BandType = 0
         LayerName = Foreground1
       end
@@ -1745,7 +1801,7 @@ object Umlagerung_T: TUmlagerung_T
         mmHeight = 5027
         mmLeft = 1058
         mmTop = 794
-        mmWidth = 158221
+        mmWidth = 120386
         BandType = 4
         LayerName = Foreground1
       end
@@ -1756,6 +1812,30 @@ object Umlagerung_T: TUmlagerung_T
         Border.Visible = True
         Border.mmPadding = 0
         DataField = 'UMenge'
+        DataPipeline = ppDBreportA4
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Name = 'Arial'
+        Font.Size = 12
+        Font.Style = []
+        ParentDataPipeline = False
+        TextAlignment = taRightJustified
+        Transparent = True
+        DataPipelineName = 'ppDBreportA4'
+        mmHeight = 5027
+        mmLeft = 121444
+        mmTop = 794
+        mmWidth = 37835
+        BandType = 4
+        LayerName = Foreground1
+      end
+      object ppDBText4: TppDBText
+        DesignLayer = ppDesignLayer2
+        UserName = 'DBText4'
+        Border.BorderPositions = [bpBottom]
+        Border.Visible = True
+        Border.mmPadding = 0
+        DataField = 'Kartons'
         DataPipeline = ppDBreportA4
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText

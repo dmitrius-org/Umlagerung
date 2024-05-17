@@ -38,7 +38,11 @@ create table pArtikel
        ,kWarengruppe          int
        ,kHersteller           int
        ,kVaterArtikel         int
-       ,cBarcode	          nvarchar(510)
+       ,cBarcode	            nvarchar(510)
+       ,Karton                float
+       ,RQty                  int
+       ,Datum                 date
+       ,VPEMenge              float
     );
                     
 create unique index pk1 on pArtikel(id);                   
@@ -109,14 +113,25 @@ grant exec on SaveMark to public;
 go
 
 --SQL CreateVIEW
-create VIEW uml
+CREATE VIEW uml
 as (
-SELECT 
+SELECT
        art.[kArtikel]
       ,art.[cArtNr]
       ,ArtName.cName
+	  ,case
+	  when [Recommended replenishment qty] is NULL then NULL
+	  when [Recommended replenishment qty] = 0 then NULL
+	  when [nVPEMenge] is NULL then NULL
+	  when [nVPEMenge] = 0 then NULL
+	  else cast(cast([Recommended replenishment qty] as int)/[nVPEMenge] as decimal(10,2))
+	  end  as Karton
+      ,cast([Recommended replenishment qty] as int) [RQty]
+      ,cast([Recommended ship date] as date) as Datum
+	    ,cast([nVPEMenge] as decimal(10,2)) as VPEMenge
+
       ,fba.cSellerSKU as FBA
-      ,(nQtyTotal - fba.nQtyUnsellable) 'FBA-Bestand'  -- 
+      ,(nQtyTotal - fba.nQtyUnsellable) 'FBA-Bestand'  --
       ,nQuantity                  as 'FBA Bestand aktuell'
       ,cast(fbmBestan.fVerfuegbar as int)as 'Fbm-Bestand'
       ,fba.nQtyInboundShipped     as 'FBA-Eingang'
@@ -130,7 +145,7 @@ SELECT
       ,cast(leUmMenge.nAnzahl as int)    as UmlagMenge
       ,cast(leUmMenge.dErstellt as date) as UmlagDatum
       ,case
-         when fba.nQuantity > 0 Then DATEDIFF(DAY, leUmMenge.dErstellt, Getdate()) 
+         when fba.nQuantity > 0 Then DATEDIFF(DAY, leUmMenge.dErstellt, Getdate())
          else 0
        end as AmaBestAlter
       ,cast(amaPreis.fPrice as float) as 'AmaPreis'
@@ -140,7 +155,6 @@ SELECT
       ,art.cBarcode
   FROM [eazybusiness].[dbo].[tArtikel] as art
 
------------------Artikelname-------------------------------
 left Join (
   SELECT [kArtikel]
       ,[kSprache]
@@ -179,7 +193,7 @@ where nPlattform = 51
 On art_map.cSellerSKU = fba_map.cSellerSKU
 
 where art_map.cSellerSKU in (
-SELECT --cFulfillmentChannel, 
+SELECT --cFulfillmentChannel,
 cSellerSKU
   FROM [eazybusiness].[dbo].[pf_amazon_angebot]
   where nPlattform = 51
@@ -198,7 +212,6 @@ FROM [eazybusiness].[dbo].[pf_amazon_angebot]
 ) as amaPreis
 ON amaPreis.cSellerSKU = fba.cSellerSKU
 
-------------------FBA 0-30 Tage--------------------------------------------
 left join(
 SELECT
 AmaBestellpos.cArtNr
@@ -259,24 +272,23 @@ On AmaBestelDatum.kAmazonBestellung = AmaBestellpos.kAmazonBestellung
  group by AmaBestellpos.cArtNr
   ) as le60_90T
   ON le60_90T.cArtNr = fba.cSellerSKU
-------------------------------------UmlagMenge, UmlagDatum-------------------------------------------------
 LEFT JOIN (
 select * from(
-  Select 
+  Select
 tArtikel_kArtikel
 ,nAnzahl
 ,bestellung.dErstellt
 ,ROW_NUMBER() over(partition by tArtikel_kArtikel order by bestellung.dErstellt desc) as Urow
 from eazybusiness.dbo.tbestellpos as bestellpos
 LEFT JOIN (
-Select 
+Select
 kBestellung
 ,cType
 ,dErstellt
 from eazybusiness.dbo.tBestellung
 ) as bestellung
 ON bestellpos.tBestellung_kBestellung = bestellung.kBestellung
-where 
+where
 cType = 'U'
 ) as ss
 where ss.Urow = 1
@@ -284,7 +296,6 @@ where ss.Urow = 1
 ON art.kArtikel = leUmMenge.tArtikel_kArtikel
 
 
----------------------FBM-Bestand--------------------------------
 
 left join (
 select
@@ -294,7 +305,6 @@ from eazybusiness.dbo.tlagerbestand
 ) as fbmBestan
 ON fbmBestan.kArtikel = art.kArtikel
 
----------------FBA 0-30-----------------------------------
 Left Join (
 SELECT
 AmaBestellpos.cArtNr
@@ -336,15 +346,25 @@ On AmaBestelDatum.kAmazonBestellung = AmaBestellpos.kAmazonBestellung
   ON FBMle30_60T.cArtNr = art.cArtNr
 
   -------------------------------------------------------------
+
+  left Join (
+             SELECT [Recommended replenishment qty]
+                   ,[Recommended ship date]
+                   ,[Merchant SKU]
+               FROM [JTL_SubDB].[dbo].[GET_RESTOCK_INVENTORY_RECOMMENDATIONS_REPORT]
+              where Country ='DE'
+             ) rec
+          ON fba.cSellerSKU = rec.[Merchant SKU]
+
+  -------------------------------------------------------------
+   Left join [eazybusiness].[dbo].[tliefartikel] as liefart
+          ON art.kArtikel = liefart.tArtikel_kArtikel
+
+
+  ----------------------------------------------------------------
   where kVaterArtikel > 0
 and kStueckliste = 0
 
---and art.[kWarengruppe] = $
---and art.[kHersteller] = $
---and art.[kVaterArtikel] = $
-
-
---order by nQtyTotal - fba.nQtyUnsellable asc
 
 );
 go
@@ -378,6 +398,10 @@ insert [pArtikel]
       ,[kHersteller]
       ,[kVaterArtikel]
       ,[cBarcode]
+      ,[Karton]
+      ,[RQty]
+      ,[Datum]
+      ,[VPEMenge]
 )
 select
        [kArtikel]
@@ -403,6 +427,10 @@ select
       ,[kHersteller]
       ,[kVaterArtikel]
       ,[cBarcode]
+      ,[Karton]
+      ,[RQty]
+      ,[Datum]
+      ,[VPEMenge]
   FROM [uml]
 
 go
@@ -418,8 +446,6 @@ SELECT
       ,p.[cArtNr]   [Artikelnummer]
       ,p.[FBA]      [Amazon SKU]
   FROM [pArtikel] p (nolock)
--- inner join tMark t (nolock)
---         on t.id = p.id
  Where p.[u] = 1
  order by p.[cArtNr]
 

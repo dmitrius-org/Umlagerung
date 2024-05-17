@@ -3,8 +3,6 @@ unit DataBaseU;
 interface
 
 Uses FireDAC.Comp.Client;
-
-    procedure CreateTmpTable(ADConnection: TFDConnection);
     /// <summary>
     ///  CreateDataBase - Создание бд и объектов
     /// </summary>
@@ -13,15 +11,6 @@ Uses FireDAC.Comp.Client;
 implementation
 
 uses SqlListU;
-
-procedure CreateTmpTable(ADConnection: TFDConnection);
-//var Query: TFDQuery;
-begin
-//  Query:= TFDQuery.Create(nil) ;
-//  Query.Connection :=ADConnection;
-//  Query.ExecSQL(SqlList['TmpTable']);
-//  Query.Free;
-end;
 
 
 procedure CreateDataBase(ADConnection: TFDConnection);  //var Query: TFDQuery;
@@ -37,7 +26,6 @@ begin
     ADConnection.ExecSQL(SqlList['CreateTable']);
 
     ADConnection.ExecSQL(SqlList['SaveMark']);
-   // ADConnection.ExecSQL(SqlList['SetMark']);
 
     ADConnection.ExecSQL(SqlList['CreateVIEW']);
 

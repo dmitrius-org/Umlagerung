@@ -19,7 +19,6 @@ object DataModule1: TDataModule1
       'DriverID=MSSQL')
     LoginPrompt = False
     OnError = FDConnectionError
-    AfterConnect = FDConnectionAfterConnect
     Left = 72
     Top = 96
   end
@@ -30,7 +29,7 @@ object DataModule1: TDataModule1
   end
   object FDPhysMSSQLDriverLink: TFDPhysMSSQLDriverLink
     DriverID = 'MSSQL'
-    ODBCDriver = 'SQL Server Native Client 11.0'
+    ODBCDriver = 'ODBC Driver 17 for SQL Server'
     ODBCAdvanced = 'SQL Server Native Client 11.0'
     Left = 344
     Top = 104

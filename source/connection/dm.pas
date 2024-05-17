@@ -18,7 +18,6 @@ type
     FDPhysMSSQLDriverLink: TFDPhysMSSQLDriverLink;
     procedure FDConnectionError(ASender, AInitiator: TObject;
       var AException: Exception);
-    procedure FDConnectionAfterConnect(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -50,23 +49,14 @@ begin
   TConn.ReadConnectionParam;
   TConn.Connection := FDConnection;
   TConn.DbConnect();
-  //if TConn.DbConnect() then
-  //  CreateDataBase(FDConnection);
 end;
 
 procedure TDataModule1.DataModuleDestroy(Sender: TObject);
 begin
-//  FDConnection.ExecSQL('delete from DatevTools100.dbo.pAmaExport where Spid = @@SPID');
   logger.Info('Программа остановлена');
   FreeDefLogger;
 end;
 
-
-procedure TDataModule1.FDConnectionAfterConnect(Sender: TObject);
-begin
-
-  CreateTmpTable(FDConnection);
-end;
 
 procedure TDataModule1.FDConnectionError(ASender, AInitiator: TObject;
   var AException: Exception);

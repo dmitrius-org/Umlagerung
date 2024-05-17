@@ -198,6 +198,17 @@ type
     btnNeuerPreis: TcxButton;
     edtNeuerPreis: TcxCalcEdit;
     btnUbertragen: TcxButton;
+    ppLabel3: TppLabel;
+    ppDBText4: TppDBText;
+    cxStyleMenge: TcxStyle;
+    FDTableRQty: TIntegerField;
+    TableViewKarton: TcxGridDBColumn;
+    TableViewRQty: TcxGridDBColumn;
+    TableViewDatum: TcxGridDBColumn;
+    TableViewVPEMenge: TcxGridDBColumn;
+    FDTableDatum: TDateField;
+    FDTableKarton: TFloatField;
+    FDTableVPEMenge: TFloatField;
     procedure FormCreate(Sender: TObject);
     procedure btnDataLoadClick(Sender: TObject);
     procedure pmRefreshClick(Sender: TObject);
@@ -206,7 +217,6 @@ type
     procedure btnWarengruppeClick(Sender: TObject);
     procedure btnArtikeClick(Sender: TObject);
     procedure btnUClick(Sender: TObject);
-    procedure TableViewuPropertiesEditValueChanged(Sender: TObject);
     procedure FDTableAfterPost(DataSet: TDataSet);
     procedure btnUMengeClick(Sender: TObject);
     procedure TableViewUMengePropertiesEditValueChanged(Sender: TObject);
@@ -236,18 +246,15 @@ type
     procedure bntCheckedAllClearClick(Sender: TObject);
     procedure btnPClick(Sender: TObject);
     procedure btnPClearClick(Sender: TObject);
-    procedure TableViewSelectionChanged(Sender: TcxCustomGridTableView);
-    procedure TableViewCanSelectRecord(Sender: TcxCustomGridTableView;
-      ARecord: TcxCustomGridRecord; var AAllow: Boolean);
-    procedure TableViewFocusedRecordChanged(Sender: TcxCustomGridTableView;
-      APrevFocusedRecord, AFocusedRecord: TcxCustomGridRecord;
-      ANewItemRecordFocusingChanged: Boolean);
     procedure TableViewCanFocusRecord(Sender: TcxCustomGridTableView;
       ARecord: TcxCustomGridRecord; var AAllow: Boolean);
     procedure btnAnlieferungTageClick(Sender: TObject);
     procedure btnNeuerPreisClick(Sender: TObject);
     procedure cxButton1Click(Sender: TObject);
     procedure cxButton2Click(Sender: TObject);
+    procedure TableViewUMengeStylesGetContentStyle(
+      Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+      AItem: TcxCustomGridTableItem; var AStyle: TcxStyle);
   private
     { Private declarations }
     FCurRowIndex:Integer;
@@ -263,8 +270,6 @@ type
 
     procedure SetCheckCount(); //anzahl
     procedure setSumme();
-
-//    function getMarkList(): string;
 
     /// <summary>
     ///  SaveMark - сохранение идентификаторов выбранных записей в базу данных
@@ -315,7 +320,6 @@ begin
         for i := 0 to FilteredRecordCount - 1 do
         begin
             TableView.DataController.Values[FilteredRecordIndex[i], TableViewu.Index]:= False;
-           // TableView.DataController.Values[FilteredRecordIndex[i], TableViewp.Index]:= False;
         end;
     end;
 
@@ -330,7 +334,6 @@ end;
 procedure TUmlagerung_T.bntPrintA4Click(Sender: TObject);
 begin
   SaveMark(TableViewp);
-  //SetMark;
 
   qReporta4.Close;
   qReporta4.Open;
@@ -369,14 +372,12 @@ begin
     TableView.Controller.BeginUpdate;
     TableView.ViewData.BeginUpdate();
 
-//
     if TableView.Controller.SelectedRecordCount > 0 then
     begin
       with TableView.Controller do
       begin
         for i := 0 to SelectedRecordCount - 1 do
         begin
-         // if TableView.DataController.Values[SelectedRows[i].RecordIndex, TableViewU.Index] then
             TableView.DataController.Values[SelectedRows[i].RecordIndex, TableViewAmaPreis.Index] := edtNeuerPreis.Value;
             FParams := FParams + vartostr(TableView.DataController.Values[SelectedRows[i].RecordIndex, TableViewid.Index]) + ',';
         end;
@@ -418,7 +419,6 @@ procedure TUmlagerung_T.btnPrint39Click(Sender: TObject);
 var I:integer; listParam: string;
 begin
   SaveMark(TableViewp);
- // SetMark;
 
   qReport39x39.Close;
   qReport39x39.Open;
@@ -487,7 +487,6 @@ begin
        for i := 0 to SelectedRecordCount - 1 do
        begin
          TableView.DataController.Values[SelectedRows[i].RecordIndex, AGridColumn.Index]:= FChecked;    //TableViewu
-        // TableView.DataController.Values[SelectedRows[i].RecordIndex, TableViewp.Index]:= not fBool;
 
          FParams := FParams + vartostr(TableView.DataController.Values[SelectedRows[i].RecordIndex, TableViewid.Index]) + ',';
        end;
@@ -502,14 +501,12 @@ begin
        begin
          TableView.DataController.Values[FilteredRecordIndex[i], AGridColumn.Index]:= FChecked;
          FParams := FParams + vartostr(TableView.DataController.Values[FilteredRecordIndex[i], TableViewid.Index]) + ',';
-        // TableView.DataController.Values[FilteredRecordIndex[i], TableViewp.Index]:= not fBool;
        end;
      end;
    end;
    TableView.ViewData.EndUpdate();
 
    logger.Info(FParams.Length.ToString);
-   //logger.Info(FParams);
 
    if FParams.Length > 0 then
    begin
@@ -624,7 +621,6 @@ begin
     begin
         for i := 0 to FilteredRecordCount - 1 do
         begin
-            //TableView.DataController.Values[FilteredRecordIndex[i], TableViewu.Index]:= False;
             TableView.DataController.Values[FilteredRecordIndex[i], TableViewp.Index]:= False;
         end;
     end;
@@ -635,7 +631,6 @@ begin
 
     TableView.ViewData.EndUpdate();
     SetCheckCount;
-
 end;
 
 procedure TUmlagerung_T.cxButton2Click(Sender: TObject);
@@ -751,12 +746,6 @@ begin
   FDQuery.ExecSQL;
 end;
 
-//procedure TUmlagerung_T.SetMark;
-//begin
-//  FDQuery.Close;
-//  FDQuery.SQL.Text:= 'exec Umlagerung.[dbo].SetMark';
-//  FDQuery.ExecSQL;
-//end;
 
 procedure TUmlagerung_T.RestoreGridState;
 var
@@ -778,14 +767,6 @@ begin
   GridUmlagerungRefresh
 end;
 
-//function TUmlagerung_T.getMarkList: string;
-//var listParam:string; i: integer;
-//begin
-//  listParam :='';
-//  for I := 0 to TableView.Controller.SelectedRecordCount - 1 do
-//      listParam := listParam +  vartostr(TableView.DataController.Values[TableView.Controller.SelectedRows[i].RecordIndex, TableViewid.Index]) + ',';
-//  result:=listParam;
-//end;
 
 procedure TUmlagerung_T.GridUmlagerungRefresh;
 begin
@@ -885,15 +866,8 @@ end;
 procedure TUmlagerung_T.TableViewCanFocusRecord(Sender: TcxCustomGridTableView;
   ARecord: TcxCustomGridRecord; var AAllow: Boolean);
 begin
-  // logger.Info('TableViewCanFocusRecord');
   FCurRowIndex:= ARecord.Index;
   FTopRowIndex:= TableView.Controller.TopRowIndex;
-end;
-
-procedure TUmlagerung_T.TableViewCanSelectRecord(Sender: TcxCustomGridTableView;
-  ARecord: TcxCustomGridRecord; var AAllow: Boolean);
-begin
-  // logger.Info('TableViewCanSelectRecord');
 end;
 
 procedure TUmlagerung_T.TableViewcArtNrSetStoredPropertyValue(
@@ -907,22 +881,9 @@ begin
     end;
 end;
 
-procedure TUmlagerung_T.TableViewFocusedRecordChanged(
-  Sender: TcxCustomGridTableView; APrevFocusedRecord,
-  AFocusedRecord: TcxCustomGridRecord; ANewItemRecordFocusingChanged: Boolean);
-begin
-  // logger.Info('TableViewFocusedRecordChanged');
-end;
-
 procedure TUmlagerung_T.TableViewpPropertiesEditValueChanged(Sender: TObject);
 begin
     TableViewp.DataBinding.DataController.Post();
-end;
-
-procedure TUmlagerung_T.TableViewSelectionChanged(
-  Sender: TcxCustomGridTableView);
-begin
-   //logger.Info('TableViewSelectionChanged');
 end;
 
 procedure TUmlagerung_T.TableViewUMengePropertiesEditValueChanged(Sender: TObject);
@@ -932,11 +893,14 @@ begin
   TableView.Controller.FocusedRowIndex  := FCurRowIndex;
 end;
 
-procedure TUmlagerung_T.TableViewuPropertiesEditValueChanged(Sender: TObject);
+procedure TUmlagerung_T.TableViewUMengeStylesGetContentStyle(
+  Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
+  AItem: TcxCustomGridTableItem; var AStyle: TcxStyle);
 begin
-//  TableViewu.DataBinding.DataController.Post();
- // TableViewp.EditValue  := TableViewu.EditValue;
- // TableViewp.DataBinding.DataController.Post();
+  if (Sender.DataController.Values[ARecord.RecordIndex, AItem.Index] >
+      Sender.DataController.Values[ARecord.RecordIndex, TableViewFbmBestand.Index])
+  then
+    AStyle := cxStyleMenge;
 end;
 
 procedure TUmlagerung_T.UmlagerungDataLoad;

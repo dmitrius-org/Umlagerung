@@ -23,7 +23,7 @@ object Form1: TForm1
     Align = alClient
     Images = cxImageList1
     TabOrder = 0
-    ExplicitWidth = 1148
+    ExplicitWidth = 1440
     ExplicitHeight = 632
     object tsUmlagerung: TTabSheet
       Caption = ' Umlagerung'
