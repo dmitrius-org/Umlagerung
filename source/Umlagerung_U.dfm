@@ -52,19 +52,20 @@ object Umlagerung_T: TUmlagerung_T
       Caption = 'Marken'
       TabOrder = 1
       DesignSize = (
-        334
+        269
         100)
       Height = 100
-      Width = 334
+      Width = 269
       object btnSelectClear: TcxButton
         Left = 142
         Top = 15
-        Width = 185
-        Height = 27
+        Width = 115
+        Height = 49
         Caption = 'Markierte Zeilen deaktivieren'
         OptionsImage.ImageIndex = 9
         OptionsImage.Images = cxImageList
         TabOrder = 0
+        WordWrap = True
         OnClick = btnSelectClearClick
       end
       object cxButton1: TcxButton
@@ -130,11 +131,12 @@ object Umlagerung_T: TUmlagerung_T
     end
     object cxGroupBox2: TcxGroupBox
       AlignWithMargins = True
-      Left = 344
+      Left = 279
       Top = 35
       Align = alLeft
       Caption = 'Filter:'
       TabOrder = 2
+      ExplicitLeft = 344
       Height = 100
       Width = 556
       object btnHersteller: TcxButton
@@ -249,15 +251,16 @@ object Umlagerung_T: TUmlagerung_T
     end
     object cxGroupBox3: TcxGroupBox
       AlignWithMargins = True
-      Left = 906
+      Left = 841
       Top = 35
       Align = alLeft
       Caption = 'Drucken'
       TabOrder = 3
+      ExplicitLeft = 906
       Height = 100
       Width = 90
       object btnPrint39: TcxButton
-        Left = 8
+        Left = 9
         Top = 44
         Width = 75
         Height = 25
@@ -282,10 +285,11 @@ object Umlagerung_T: TUmlagerung_T
     end
     object cxGroupBox4: TcxGroupBox
       AlignWithMargins = True
-      Left = 1002
+      Left = 937
       Top = 35
       Align = alLeft
       TabOrder = 4
+      ExplicitLeft = 1002
       Height = 100
       Width = 246
       object edtUMenge: TcxSpinEdit
@@ -323,13 +327,24 @@ object Umlagerung_T: TUmlagerung_T
         TabOrder = 3
         OnClick = btnUbertragenClick
       end
+      object btnSetUMenge: TcxButton
+        Left = 95
+        Top = 43
+        Width = 148
+        Height = 25
+        Caption = 'RQty -> U-Menge'
+        OptionsImage.Images = cxImageList
+        TabOrder = 4
+        OnClick = btnSetUMengeClick
+      end
     end
     object cxGroupBox5: TcxGroupBox
       AlignWithMargins = True
-      Left = 1254
+      Left = 1189
       Top = 35
       Align = alLeft
       TabOrder = 5
+      ExplicitLeft = 1254
       Height = 100
       Width = 201
       object cxButton2: TcxButton
@@ -657,8 +672,8 @@ object Umlagerung_T: TUmlagerung_T
       Height = 46
       Align = alBottom
       TabOrder = 1
-      ExplicitTop = 373
-      ExplicitWidth = 1640
+      ExplicitLeft = -479
+      ExplicitTop = 358
       object Label1: TLabel
         Left = 5
         Top = 16
@@ -697,6 +712,8 @@ object Umlagerung_T: TUmlagerung_T
         StyleFocused.LookAndFeel.NativeStyle = True
         StyleHot.LookAndFeel.Kind = lfUltraFlat
         StyleHot.LookAndFeel.NativeStyle = True
+        StyleReadOnly.LookAndFeel.Kind = lfUltraFlat
+        StyleReadOnly.LookAndFeel.NativeStyle = True
         TabOrder = 0
         Height = 23
         Width = 67
@@ -725,6 +742,8 @@ object Umlagerung_T: TUmlagerung_T
         StyleFocused.LookAndFeel.NativeStyle = True
         StyleHot.LookAndFeel.Kind = lfUltraFlat
         StyleHot.LookAndFeel.NativeStyle = True
+        StyleReadOnly.LookAndFeel.Kind = lfUltraFlat
+        StyleReadOnly.LookAndFeel.NativeStyle = True
         TabOrder = 1
         Height = 23
         Width = 113
@@ -734,7 +753,7 @@ object Umlagerung_T: TUmlagerung_T
       Left = 160
       Top = 24
       Width = 184
-      Height = 152
+      Height = 158
       PopupMenu = pmColorGallery
       Visible = False
       TabOrder = 2
@@ -1419,8 +1438,8 @@ object Umlagerung_T: TUmlagerung_T
       ''
       ''
       
-        'SELECT a.[id],a.[cName],a.[U-Menge] UMenge, a.cBarcode, (a.[U-Me' +
-        'nge] / a.VPEMenge) as Kartons'
+        'SELECT a.[id],a.[cName],a.[U-Menge] UMenge, a.cBarcode, round((a' +
+        '.[U-Menge] / a.VPEMenge), 2) as Kartons'
       '  FROM [pArtikel] a (nolock) '
       ' inner join tMark t (nolock) '
       '         on t.id = a.id'

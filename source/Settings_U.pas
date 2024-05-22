@@ -11,7 +11,7 @@ uses
   Vcl.Menus, System.ImageList, Vcl.ImgList, cxImageList, Vcl.StdCtrls, cxButtons,
 
   DateUtils, cxButtonEdit, cxClasses, cxShellBrowserDialog, dxPSCore,
-  dxPSFileBasedXplorer;
+  dxPSFileBasedXplorer, dxCoreGraphics;
 
 type
   TSettings_F = class(TForm)

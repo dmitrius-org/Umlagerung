@@ -145,7 +145,7 @@ object Settings_F: TSettings_F
       Properties.ReadOnly = False
       Properties.OnButtonClick = JTLPathPropertiesButtonClick
       TabOrder = 0
-      Width = 430
+      Width = 582
     end
     object cxLabel1: TcxLabel
       Left = 32

@@ -209,6 +209,7 @@ type
     FDTableDatum: TDateField;
     FDTableKarton: TFloatField;
     FDTableVPEMenge: TFloatField;
+    btnSetUMenge: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure btnDataLoadClick(Sender: TObject);
     procedure pmRefreshClick(Sender: TObject);
@@ -255,6 +256,7 @@ type
     procedure TableViewUMengeStylesGetContentStyle(
       Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
       AItem: TcxCustomGridTableItem; var AStyle: TcxStyle);
+    procedure btnSetUMengeClick(Sender: TObject);
   private
     { Private declarations }
     FCurRowIndex:Integer;
@@ -432,6 +434,15 @@ begin
   begin
     TableView.Controller.ClearSelection;
   end;
+end;
+
+procedure TUmlagerung_T.btnSetUMengeClick(Sender: TObject);
+begin
+  FDQuery.Close;
+  FDQuery.SQL.Text := 'Update Umlagerung.[dbo].[pArtikel] set [U-Menge] = RQty where u = 1';
+  FDQuery.ExecSQL;
+
+  GridUmlagerungRefresh();
 end;
 
 procedure TUmlagerung_T.JTLExport(SqlName, Template: string);
@@ -693,7 +704,7 @@ begin
   AStoreKey := 'Software\Umlagerung\Grid';
   //The name to refer to the stored settings
   ASaveViewName := 'TableView Layout';
-  AOptions := [];
+  AOptions := [gsoUseFilter];
 
   TableView.StoreToRegistry(AStoreKey, True, AOptions, ASaveViewName);
 end;
@@ -757,7 +768,7 @@ begin
   AStoreKey := 'Software\Umlagerung\Grid';
   //The name to refer to the stored settings
   ASaveViewName := 'TableView Layout';
-  AOptions := [];
+  AOptions := [gsoUseFilter];
 
   TableView.RestoreFromRegistry(AStoreKey, False, False, AOptions, ASaveViewName);
 end;

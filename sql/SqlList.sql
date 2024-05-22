@@ -119,16 +119,17 @@ SELECT
        art.[kArtikel]
       ,art.[cArtNr]
       ,ArtName.cName
-	  ,case
-	  when [Recommended replenishment qty] is NULL then NULL
-	  when [Recommended replenishment qty] = 0 then NULL
-	  when [nVPEMenge] is NULL then NULL
-	  when [nVPEMenge] = 0 then NULL
-	  else cast(cast([Recommended replenishment qty] as int)/[nVPEMenge] as decimal(10,2))
-	  end  as Karton
+   ,case
+   when [Recommended replenishment qty] is NULL then NULL
+   when [Recommended replenishment qty] = 0 then NULL
+   when [nVPEMenge] is NULL then NULL
+   when [nVPEMenge] = 0 then NULL
+   else cast(cast([Recommended replenishment qty] as int)/[nVPEMenge] as decimal(10,2))
+   end  as Karton
       ,cast([Recommended replenishment qty] as int) [RQty]
-      ,cast([Recommended ship date] as date) as Datum
-	    ,cast([nVPEMenge] as decimal(10,2)) as VPEMenge
+
+      ,FORMAT(CONVERT(DATE, [Recommended ship date], 101), 'dd.MM.yyyy') as Datum
+     ,cast([nVPEMenge] as decimal(10,2)) as VPEMenge
 
       ,fba.cSellerSKU as FBA
       ,(nQtyTotal - fba.nQtyUnsellable) 'FBA-Bestand'  --
