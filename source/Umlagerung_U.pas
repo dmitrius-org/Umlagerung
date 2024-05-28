@@ -210,6 +210,9 @@ type
     FDTableKarton: TFloatField;
     FDTableVPEMenge: TFloatField;
     btnSetUMenge: TcxButton;
+    btnRQtyKartonVoll: TcxButton;
+    edtKartons: TcxTextEdit;
+    Label3: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btnDataLoadClick(Sender: TObject);
     procedure pmRefreshClick(Sender: TObject);
@@ -257,6 +260,8 @@ type
       Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
       AItem: TcxCustomGridTableItem; var AStyle: TcxStyle);
     procedure btnSetUMengeClick(Sender: TObject);
+    procedure TableViewuPropertiesEditValueChanged(Sender: TObject);
+    procedure btnRQtyKartonVollClick(Sender: TObject);
   private
     { Private declarations }
     FCurRowIndex:Integer;
@@ -272,6 +277,11 @@ type
 
     procedure SetCheckCount(); //anzahl
     procedure setSumme();
+
+    /// <summary>
+    ///  setKartons - расчет количества целых коробок
+    ///</summary>
+    procedure setKartons();
 
     /// <summary>
     ///  SaveMark - сохранение идентификаторов выбранных записей в базу данных
@@ -426,6 +436,16 @@ begin
   qReport39x39.Open;
 
   ppReport39x39.PrintReport;
+end;
+
+procedure TUmlagerung_T.btnRQtyKartonVollClick(Sender: TObject);
+begin
+//RQty-> Karton Voll
+  FDQuery.Close;
+  FDQuery.SQL.Text := 'Update Umlagerung.[dbo].[pArtikel] set [U-Menge] = CEILING([RQty]/[VPEMenge]) * VPEMenge where u = 1';
+  FDQuery.ExecSQL;
+
+  GridUmlagerungRefresh();
 end;
 
 procedure TUmlagerung_T.btnSelectClearClick(Sender: TObject);
@@ -780,24 +800,36 @@ end;
 
 
 procedure TUmlagerung_T.GridUmlagerungRefresh;
+var  r, f : Integer;
 begin
   TableFilter;
-  TableView.BeginUpdate();
+
   if  FDTable.Connection.Connected then
   begin
-    qHersteller.Open;
-    qWarengruppe.Open;
-    qArtike.Open;
+    TableView.BeginUpdate();
+    r := TableView.Controller.TopRowIndex;
+    f := TableView.Controller.FocusedRowIndex;
+    try
 
-    FDTable.Close;
-    FDTable.Open;
+      qHersteller.Open;
+      qWarengruppe.Open;
+      qArtike.Open;
 
-    setCheckCount();
-    setSumme();
+      FDTable.Close;
+      FDTable.Open;
 
-    FDTable.First;
+      setCheckCount();
+      setSumme();
+      setKartons();
+
+      TableView.Controller.TopRowIndex := r;
+      TableView.Controller.FocusedRowIndex := f;
+
+    finally
+      TableView.EndUpdate();
+    end;
   end;
-  TableView.EndUpdate();
+
 end;
 
 procedure TUmlagerung_T.MenuItem1Click(Sender: TObject);
@@ -818,6 +850,15 @@ end;
 procedure TUmlagerung_T.setColorClick(Sender: TObject);
 begin
   dxColorGallery1.Show;
+end;
+
+procedure TUmlagerung_T.setKartons;
+begin
+   FDQuery.Close;
+   FDQuery.SQL.Text := ' select isnull((select sum(case when VPEMenge> 0 and [U-Menge] % cast(VPEMenge as int) = 0 then [U-Menge]/cast(VPEMenge as int) else 0 end ) from Umlagerung.[dbo].[pArtikel] (nolock)), 0)';
+   FDQuery.Open;
+
+   edtKartons.EditValue := FDQuery.Fields[0].Value;
 end;
 
 procedure TUmlagerung_T.setSumme;
@@ -902,6 +943,9 @@ begin
   TableViewUMenge.DataBinding.DataController.Post();
   TableView.Controller.TopRowIndex := FTopRowIndex ;
   TableView.Controller.FocusedRowIndex  := FCurRowIndex;
+
+
+  setKartons;
 end;
 
 procedure TUmlagerung_T.TableViewUMengeStylesGetContentStyle(
@@ -912,6 +956,12 @@ begin
       Sender.DataController.Values[ARecord.RecordIndex, TableViewFbmBestand.Index])
   then
     AStyle := cxStyleMenge;
+end;
+
+procedure TUmlagerung_T.TableViewuPropertiesEditValueChanged(Sender: TObject);
+begin
+    TableViewu.DataBinding.DataController.Post();
+
 end;
 
 procedure TUmlagerung_T.UmlagerungDataLoad;

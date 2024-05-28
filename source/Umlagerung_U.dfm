@@ -136,7 +136,6 @@ object Umlagerung_T: TUmlagerung_T
       Align = alLeft
       Caption = 'Filter:'
       TabOrder = 2
-      ExplicitLeft = 344
       Height = 100
       Width = 556
       object btnHersteller: TcxButton
@@ -256,7 +255,6 @@ object Umlagerung_T: TUmlagerung_T
       Align = alLeft
       Caption = 'Drucken'
       TabOrder = 3
-      ExplicitLeft = 906
       Height = 100
       Width = 90
       object btnPrint39: TcxButton
@@ -289,7 +287,6 @@ object Umlagerung_T: TUmlagerung_T
       Top = 35
       Align = alLeft
       TabOrder = 4
-      ExplicitLeft = 1002
       Height = 100
       Width = 246
       object edtUMenge: TcxSpinEdit
@@ -337,6 +334,16 @@ object Umlagerung_T: TUmlagerung_T
         TabOrder = 4
         OnClick = btnSetUMengeClick
       end
+      object btnRQtyKartonVoll: TcxButton
+        Left = 95
+        Top = 70
+        Width = 148
+        Height = 25
+        Caption = 'RQty-> Karton Voll'
+        OptionsImage.Images = cxImageList
+        TabOrder = 5
+        OnClick = btnRQtyKartonVollClick
+      end
     end
     object cxGroupBox5: TcxGroupBox
       AlignWithMargins = True
@@ -344,7 +351,6 @@ object Umlagerung_T: TUmlagerung_T
       Top = 35
       Align = alLeft
       TabOrder = 5
-      ExplicitLeft = 1254
       Height = 100
       Width = 201
       object cxButton2: TcxButton
@@ -431,6 +437,7 @@ object Umlagerung_T: TUmlagerung_T
           Caption = 'U'
           DataBinding.FieldName = 'u'
           PropertiesClassName = 'TcxCheckBoxProperties'
+          Properties.OnEditValueChanged = TableViewuPropertiesEditValueChanged
           OnGetStoredProperties = TableViewkArtikelGetStoredProperties
           OnGetStoredPropertyValue = TableViewkArtikelGetStoredPropertyValue
           OnSetStoredPropertyValue = TableViewcArtNrSetStoredPropertyValue
@@ -672,8 +679,8 @@ object Umlagerung_T: TUmlagerung_T
       Height = 46
       Align = alBottom
       TabOrder = 1
-      ExplicitLeft = -479
-      ExplicitTop = 358
+      ExplicitTop = 373
+      ExplicitWidth = 1640
       object Label1: TLabel
         Left = 5
         Top = 16
@@ -687,6 +694,13 @@ object Umlagerung_T: TUmlagerung_T
         Width = 121
         Height = 15
         Caption = 'Gesamtzahl der Artikel:'
+      end
+      object Label3: TLabel
+        Left = 539
+        Top = 16
+        Width = 43
+        Height = 15
+        Caption = 'Kartons:'
       end
       object edtCountChecked: TcxTextEdit
         Left = 129
@@ -745,6 +759,36 @@ object Umlagerung_T: TUmlagerung_T
         StyleReadOnly.LookAndFeel.Kind = lfUltraFlat
         StyleReadOnly.LookAndFeel.NativeStyle = True
         TabOrder = 1
+        Height = 23
+        Width = 113
+      end
+      object edtKartons: TcxTextEdit
+        Left = 588
+        Top = 13
+        AutoSize = False
+        BeepOnEnter = False
+        BiDiMode = bdRightToLeft
+        ParentBiDiMode = False
+        ParentColor = True
+        Properties.Alignment.Horz = taCenter
+        Properties.AutoSelect = False
+        Properties.IncrementalSearch = False
+        Properties.ReadOnly = True
+        Properties.UseLeftAlignmentOnEditing = False
+        Properties.ValidationOptions = []
+        Style.Edges = [bLeft, bTop, bRight, bBottom]
+        Style.LookAndFeel.Kind = lfUltraFlat
+        Style.LookAndFeel.NativeStyle = True
+        Style.TransparentBorder = True
+        StyleDisabled.LookAndFeel.Kind = lfUltraFlat
+        StyleDisabled.LookAndFeel.NativeStyle = True
+        StyleFocused.LookAndFeel.Kind = lfUltraFlat
+        StyleFocused.LookAndFeel.NativeStyle = True
+        StyleHot.LookAndFeel.Kind = lfUltraFlat
+        StyleHot.LookAndFeel.NativeStyle = True
+        StyleReadOnly.LookAndFeel.Kind = lfUltraFlat
+        StyleReadOnly.LookAndFeel.NativeStyle = True
+        TabOrder = 2
         Height = 23
         Width = 113
       end
