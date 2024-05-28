@@ -700,6 +700,7 @@ procedure TUmlagerung_T.FDTableAfterPost(DataSet: TDataSet);
 begin
   setCheckCount;
   setSumme;
+  setKartons;
 end;
 
 procedure TUmlagerung_T.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -855,7 +856,7 @@ end;
 procedure TUmlagerung_T.setKartons;
 begin
    FDQuery.Close;
-   FDQuery.SQL.Text := ' select isnull((select sum(case when VPEMenge> 0 and [U-Menge] % cast(VPEMenge as int) = 0 then [U-Menge]/cast(VPEMenge as int) else 0 end ) from Umlagerung.[dbo].[pArtikel] (nolock)), 0)';
+   FDQuery.SQL.Text := ' select isnull((select sum(case when VPEMenge> 0 and [U-Menge] % cast(VPEMenge as int) = 0 then [U-Menge]/cast(VPEMenge as int) else 0 end ) from Umlagerung.[dbo].[pArtikel] (nolock)  where [u] = 1), 0)';
    FDQuery.Open;
 
    edtKartons.EditValue := FDQuery.Fields[0].Value;
@@ -869,7 +870,7 @@ end;
 function TUmlagerung_T.SummeCheckedRow: integer;
 begin
    FDQuery.Close;   // [Umlagerung]
-   FDQuery.SQL.Text := ' select isnull((select sum([U-Menge]) from Umlagerung.[dbo].[pArtikel] (nolock)/* where [u] = 1*/), 0)';
+   FDQuery.SQL.Text := ' select isnull((select sum([U-Menge]) from Umlagerung.[dbo].[pArtikel] (nolock) where [u] = 1), 0)';
    FDQuery.Open;
 
    result:= FDQuery.Fields[0].Value;
@@ -935,7 +936,7 @@ end;
 
 procedure TUmlagerung_T.TableViewpPropertiesEditValueChanged(Sender: TObject);
 begin
-    TableViewp.DataBinding.DataController.Post();
+  TableViewp.DataBinding.DataController.Post();
 end;
 
 procedure TUmlagerung_T.TableViewUMengePropertiesEditValueChanged(Sender: TObject);
@@ -944,8 +945,12 @@ begin
   TableView.Controller.TopRowIndex := FTopRowIndex ;
   TableView.Controller.FocusedRowIndex  := FCurRowIndex;
 
-
   setKartons;
+end;
+
+procedure TUmlagerung_T.TableViewuPropertiesEditValueChanged(Sender: TObject);
+begin
+  TableViewu.DataBinding.DataController.Post();
 end;
 
 procedure TUmlagerung_T.TableViewUMengeStylesGetContentStyle(
@@ -958,11 +963,6 @@ begin
     AStyle := cxStyleMenge;
 end;
 
-procedure TUmlagerung_T.TableViewuPropertiesEditValueChanged(Sender: TObject);
-begin
-    TableViewu.DataBinding.DataController.Post();
-
-end;
 
 procedure TUmlagerung_T.UmlagerungDataLoad;
 begin
