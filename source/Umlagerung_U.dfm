@@ -291,7 +291,7 @@ object Umlagerung_T: TUmlagerung_T
       Width = 246
       object edtUMenge: TcxSpinEdit
         Left = 8
-        Top = 70
+        Top = 71
         TabOrder = 0
         Width = 81
       end
@@ -326,7 +326,7 @@ object Umlagerung_T: TUmlagerung_T
       end
       object btnSetUMenge: TcxButton
         Left = 95
-        Top = 43
+        Top = 44
         Width = 148
         Height = 25
         Caption = 'RQty -> U-Menge'
@@ -406,7 +406,6 @@ object Umlagerung_T: TUmlagerung_T
       object TableView: TcxGridDBTableView
         Navigator.Buttons.CustomButtons = <>
         ScrollbarAnnotations.CustomAnnotations = <>
-        OnCanFocusRecord = TableViewCanFocusRecord
         DataController.DataSource = DataSource
         DataController.KeyFieldNames = 'id'
         DataController.Summary.DefaultGroupSummaryItems = <>
@@ -416,6 +415,7 @@ object Umlagerung_T: TUmlagerung_T
         FilterRow.OperatorCustomization = True
         OptionsCustomize.ColumnHiding = True
         OptionsCustomize.ColumnsQuickCustomization = True
+        OptionsData.Appending = True
         OptionsSelection.MultiSelect = True
         OptionsSelection.HideFocusRectOnExit = False
         OptionsSelection.MultiSelectMode = msmPersistent
@@ -666,6 +666,13 @@ object Umlagerung_T: TUmlagerung_T
           HeaderAlignmentHorz = taCenter
           HeaderGlyphAlignmentHorz = taCenter
           Styles.Content = AmaPreis
+        end
+        object TableViewkVaterArtikel: TcxGridDBColumn
+          DataBinding.FieldName = 'kVaterArtikel'
+        end
+        object TableViewkVaterArtikelName: TcxGridDBColumn
+          DataBinding.FieldName = 'kVaterArtikelName'
+          Width = 200
         end
       end
       object GridLevel: TcxGridLevel
@@ -1151,6 +1158,40 @@ object Umlagerung_T: TUmlagerung_T
           90F20000000049454E44AE426082}
         FileName = 'Images\Export\ExportToCSV_16x16.png'
         Keywords = 'Export;ExportToCSV'
+      end
+      item
+        ImageClass = 'TdxSmartImage'
+        Image.Data = {
+          3C3F786D6C2076657273696F6E3D22312E302220656E636F64696E673D225554
+          462D38223F3E0D0A3C7376672076657273696F6E3D22312E31222069643D224C
+          617965725F312220786D6C6E733D22687474703A2F2F7777772E77332E6F7267
+          2F323030302F7376672220786D6C6E733A786C696E6B3D22687474703A2F2F77
+          77772E77332E6F72672F313939392F786C696E6B2220783D223070782220793D
+          22307078222076696577426F783D223020302033322033322220656E61626C65
+          2D6261636B67726F756E643D226E6577203020302033322033322220786D6C3A
+          73706163653D227072657365727665223E262331333B262331303B3C70617468
+          20643D224D31362C31392E31222F3E0D0A3C7061746820643D224D31322E392C
+          3136222F3E0D0A3C7061746820643D224D31362C31322E39222F3E0D0A3C7061
+          746820643D224D31392E312C3136222F3E0D0A3C673E0D0A09093C7061746820
+          643D224D372C323863302C312E312C302E392C322C322C3268313463312E312C
+          302C322D302E392C322D32563848375632387A204D32302C313263302D302E36
+          2C302E342D312C312D3173312C302E342C312C3176313463302C302E362D302E
+          342C312D312C31732D312D302E342D312D315631327A20202623393B2623393B
+          204D31352C313263302D302E362C302E342D312C312D3173312C302E342C312C
+          3176313463302C302E362D302E342C312D312C31732D312D302E342D312D3156
+          31327A204D31302C313263302D302E352C302E352D312C312D3173312C302E35
+          2C312C3176313463302C302E352D302E352C312D312C3120202623393B262339
+          3B732D312D302E352D312D315631327A222F3E0D0A09093C7061746820643D22
+          4D32362C35682D37563463302D312E312D302E392D322D322D32682D32632D31
+          2E312C302D322C302E392D322C327631483643352E342C352C352C352E342C35
+          2C36763168323256364332372C352E342C32362E362C352C32362C357A204D31
+          382C35682D34563420202623393B2623393B63302D302E362C302E342D312C31
+          2D31683263302E362C302C312C302E342C312C3156357A222F3E0D0A093C2F67
+          3E0D0A3C2F7376673E0D0A}
+        FileName = 
+          'D:\Components\DevExpress\DevExpress 23.2.6\VCL\ExpressLibrary\So' +
+          'urces\Icon Library\SVG Images\HybridDemoIcons\BottomPanel\Hybrid' +
+          'Demo_Delete.svg'
       end>
   end
   object qHersteller: TFDQuery
@@ -1165,12 +1206,19 @@ object Umlagerung_T: TUmlagerung_T
   end
   object PopupMenu: TPopupMenu
     Images = cxImageList
+    OnPopup = PopupMenuPopup
     Left = 64
     Top = 249
     object pmRefresh: TMenuItem
       Caption = 'Refresh'
       ImageIndex = 0
       OnClick = pmRefreshClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object Datensatzlschen1: TMenuItem
+      Action = actDelete
     end
   end
   object FDQuery: TFDQuery
@@ -1231,22 +1279,18 @@ object Umlagerung_T: TUmlagerung_T
   end
   object FDTable: TFDTable
     AfterPost = FDTableAfterPost
+    Filtered = True
     IndexFieldNames = 'id'
     Connection = DataModule1.FDConnection
     FetchOptions.AssignedValues = [evAutoFetchAll]
     ResourceOptions.AssignedValues = [rvEscapeExpand, rvCmdExecMode]
-    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate, uvUpdateChngFields, uvUpdateMode, uvLockMode, uvLockPoint, uvLockWait, uvRefreshMode, uvFetchGeneratorsPoint, uvCheckRequired, uvCheckReadOnly, uvCheckUpdatable, uvAutoCommitUpdates]
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate, uvAutoCommitUpdates]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
-    UpdateOptions.LockWait = True
-    UpdateOptions.RefreshMode = rmManual
-    UpdateOptions.FetchGeneratorsPoint = gpNone
-    UpdateOptions.CheckRequired = False
-    UpdateOptions.CheckReadOnly = False
-    UpdateOptions.CheckUpdatable = False
     UpdateOptions.AutoCommitUpdates = True
     UpdateOptions.UpdateTableName = '[Umlagerung].[dbo].[pArtikel] '
-    UpdateOptions.KeyFields = 'id'
+    UpdateOptions.KeyFields = 'ID'
+    UpdateOptions.AutoIncFields = 'ID'
     TableName = 'Umlagerung.dbo.[pArtikel]'
     Left = 640
     Top = 369
@@ -1372,6 +1416,10 @@ object Umlagerung_T: TUmlagerung_T
       Origin = 'kVaterArtikel'
       ReadOnly = True
     end
+    object FDTablekVaterArtikelName: TWideStringField
+      FieldName = 'kVaterArtikelName'
+      Size = 150
+    end
     object FDTablecBarcode: TWideStringField
       FieldName = 'cBarcode'
       Origin = 'cBarcode'
@@ -1481,9 +1529,15 @@ object Umlagerung_T: TUmlagerung_T
       'use [Umlagerung];'
       ''
       ''
+      'SELECT a.[id],a.[cName],'
+      '       a.[U-Menge] UMenge, '
+      '       a.cBarcode, '
+      '       case '
       
-        'SELECT a.[id],a.[cName],a.[U-Menge] UMenge, a.cBarcode, round((a' +
-        '.[U-Menge] / a.VPEMenge), 2) as Kartons'
+        '            when round((a.[U-Menge] / a.VPEMenge), 2) < 1 then n' +
+        'ull'
+      '            else round((a.[U-Menge] / a.VPEMenge), 2) '
+      '       end  as Kartons    '
       '  FROM [pArtikel] a (nolock) '
       ' inner join tMark t (nolock) '
       '         on t.id = a.id'
@@ -2059,6 +2113,16 @@ object Umlagerung_T: TUmlagerung_T
       Caption = 'Close'
       ImageIndex = 8
       OnClick = MenuItem1Click
+    end
+  end
+  object ActionList1: TActionList
+    Images = cxImageList
+    Left = 168
+    Top = 371
+    object actDelete: TAction
+      Caption = 'Datensatz l'#246'schen'
+      ImageIndex = 11
+      OnExecute = actDeleteExecute
     end
   end
 end

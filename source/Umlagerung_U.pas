@@ -26,7 +26,8 @@ uses
   ppParameter, ppProd, ppReport, ppRelatv, ppDBPipe, shellapi, cxCalendar,
   Datasnap.DBClient, dxBarBuiltInMenu, cxGridCustomPopupMenu, cxGridPopupMenu,
   dxCore, dxGalleryControl, dxColorGallery, dxColorEdit, cxGeometry,
-  dxFramedControl, cxGroupBox, dxPanel, ppVar;
+  dxFramedControl, cxGroupBox, dxPanel, ppVar, cxDataUtils, System.Actions,
+  Vcl.ActnList;
 
 type
   TUmlagerung_T = class(TForm)
@@ -213,6 +214,13 @@ type
     btnRQtyKartonVoll: TcxButton;
     edtKartons: TcxTextEdit;
     Label3: TLabel;
+    ActionList1: TActionList;
+    actDelete: TAction;
+    N1: TMenuItem;
+    Datensatzlschen1: TMenuItem;
+    FDTablekVaterArtikelName: TWideStringField;
+    TableViewkVaterArtikel: TcxGridDBColumn;
+    TableViewkVaterArtikelName: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure btnDataLoadClick(Sender: TObject);
     procedure pmRefreshClick(Sender: TObject);
@@ -250,8 +258,6 @@ type
     procedure bntCheckedAllClearClick(Sender: TObject);
     procedure btnPClick(Sender: TObject);
     procedure btnPClearClick(Sender: TObject);
-    procedure TableViewCanFocusRecord(Sender: TcxCustomGridTableView;
-      ARecord: TcxCustomGridRecord; var AAllow: Boolean);
     procedure btnAnlieferungTageClick(Sender: TObject);
     procedure btnNeuerPreisClick(Sender: TObject);
     procedure cxButton1Click(Sender: TObject);
@@ -262,9 +268,11 @@ type
     procedure btnSetUMengeClick(Sender: TObject);
     procedure TableViewuPropertiesEditValueChanged(Sender: TObject);
     procedure btnRQtyKartonVollClick(Sender: TObject);
+    procedure actDeleteExecute(Sender: TObject);
+    procedure PopupMenuPopup(Sender: TObject);
   private
     { Private declarations }
-    FCurRowIndex:Integer;
+    FFocusedRowIndex:Integer;
     FTopRowIndex :Integer;
 
     procedure GridUmlagerungRefresh();
@@ -298,6 +306,9 @@ type
     ///  Template - шаблон для экспорта в JTL
     ///</summary>
     procedure JTLExport(SqlName:string; Template: string);
+
+    procedure GetPosition();
+    procedure SetPosition();
   public
     { Public declarations }
 
@@ -321,6 +332,20 @@ implementation
 {$R *.dfm}
 
 uses DataBaseU, dm, SqlListU, MTLogger, UtilsRegistry, ExportQueryU;
+
+procedure TUmlagerung_T.actDeleteExecute(Sender: TObject);
+begin
+  FDQuery.Close;   // [Umlagerung]
+  FDQuery.SQL.Text := 'Insert Umlagerung.[dbo].tArtikelDeleted (kArtikel) select kArtikel from Umlagerung.[dbo].[pArtikel] (nolock) where u = 1; ' +
+                      ''+
+                      'delete from Umlagerung.[dbo].[pArtikel] where u = 1';
+  FDQuery.ExecSQL;
+
+  GridUmlagerungRefresh();
+
+  Grid.SetFocus;
+
+end;
 
 procedure TUmlagerung_T.bntCheckedAllClearClick(Sender: TObject);
 var i:Integer;
@@ -438,14 +463,38 @@ begin
   ppReport39x39.PrintReport;
 end;
 
-procedure TUmlagerung_T.btnRQtyKartonVollClick(Sender: TObject);
+procedure TUmlagerung_T.btnRQtyKartonVollClick(Sender: TObject); //RQty-> Karton Voll
+var i:Integer;
 begin
-//RQty-> Karton Voll
-  FDQuery.Close;
-  FDQuery.SQL.Text := 'Update Umlagerung.[dbo].[pArtikel] set [U-Menge] = CEILING([RQty]/[VPEMenge]) * VPEMenge where u = 1';
-  FDQuery.ExecSQL;
+   if TableView.Controller.SelectedRecordCount > 0 then
+   begin
+     TableView.ViewData.BeginUpdate();
+     GetPosition;
+     try
+       with TableView.Controller do
+       begin
+         for i := 0 to SelectedRecordCount - 1 do
+         begin
+           TableView.DataController.FocusedRecordIndex := SelectedRows[i].RecordIndex;
+           TableView.DataController.SetEditValue(TableViewUMenge.Index, TableView.DataController.Values[SelectedRows[i].RecordIndex, TableViewRQty.Index], evsValue);
 
-  GridUmlagerungRefresh();
+           TableView.DataController.Post;
+         end;
+       end;
+     finally
+       SetPosition;
+       TableView.ViewData.EndUpdate();
+     end;
+   end
+   else
+   begin
+     FDQuery.Close;
+     FDQuery.SQL.Text := 'Update Umlagerung.[dbo].[pArtikel] set [U-Menge] = CEILING([RQty]/[VPEMenge]) * VPEMenge where u = 1';
+     FDQuery.ExecSQL;
+
+     GridUmlagerungRefresh();
+   end;
+   Grid.SetFocus;
 end;
 
 procedure TUmlagerung_T.btnSelectClearClick(Sender: TObject);
@@ -456,13 +505,38 @@ begin
   end;
 end;
 
-procedure TUmlagerung_T.btnSetUMengeClick(Sender: TObject);
+procedure TUmlagerung_T.btnSetUMengeClick(Sender: TObject); // RQty -> U-Menge
+var i: Integer;
 begin
-  FDQuery.Close;
-  FDQuery.SQL.Text := 'Update Umlagerung.[dbo].[pArtikel] set [U-Menge] = RQty where u = 1';
-  FDQuery.ExecSQL;
+   if TableView.Controller.SelectedRecordCount > 0 then
+   begin
+     TableView.ViewData.BeginUpdate();
+     GetPosition;
+     try
+       with TableView.Controller do
+       begin
+         for i := 0 to SelectedRecordCount - 1 do
+         begin
+           TableView.DataController.FocusedRecordIndex := SelectedRows[i].RecordIndex;
+           TableView.DataController.SetEditValue(TableViewUMenge.Index, TableView.DataController.Values[SelectedRows[i].RecordIndex, TableViewRQty.Index], evsValue);
 
-  GridUmlagerungRefresh();
+           TableView.DataController.Post;
+         end;
+       end;
+     finally
+       SetPosition;
+       TableView.ViewData.EndUpdate();
+     end;
+   end
+   else
+   begin
+     FDQuery.Close;
+     FDQuery.SQL.Text := 'Update Umlagerung.[dbo].[pArtikel] set [U-Menge] = RQty where u = 1';
+     FDQuery.ExecSQL;
+
+     GridUmlagerungRefresh();
+   end;
+   Grid.SetFocus;
 end;
 
 procedure TUmlagerung_T.JTLExport(SqlName, Template: string);
@@ -721,9 +795,8 @@ var
   I: Integer;
   AOptions: TcxGridStorageOptions;
 begin
-  //The path to the layout
   AStoreKey := 'Software\Umlagerung\Grid';
-  //The name to refer to the stored settings
+
   ASaveViewName := 'TableView Layout';
   AOptions := [gsoUseFilter];
 
@@ -799,19 +872,21 @@ begin
   GridUmlagerungRefresh
 end;
 
+procedure TUmlagerung_T.GetPosition;
+begin
+  FTopRowIndex := TableView.Controller.TopRowIndex;
+  FFocusedRowIndex := TableView.Controller.FocusedRowIndex;
+end;
 
 procedure TUmlagerung_T.GridUmlagerungRefresh;
-var  r, f : Integer;
 begin
   TableFilter;
 
   if  FDTable.Connection.Connected then
   begin
+    GetPosition;
     TableView.BeginUpdate();
-    r := TableView.Controller.TopRowIndex;
-    f := TableView.Controller.FocusedRowIndex;
     try
-
       qHersteller.Open;
       qWarengruppe.Open;
       qArtike.Open;
@@ -823,11 +898,10 @@ begin
       setSumme();
       setKartons();
 
-      TableView.Controller.TopRowIndex := r;
-      TableView.Controller.FocusedRowIndex := f;
-
+      logger.Info('FTopRowIndex: ' + FTopRowIndex.ToString + ' FCurRowIndex: ' + FFocusedRowIndex.ToString );
     finally
       TableView.EndUpdate();
+      SetPosition;
     end;
   end;
 
@@ -841,6 +915,15 @@ end;
 procedure TUmlagerung_T.pmRefreshClick(Sender: TObject);
 begin
   GridUmlagerungRefresh
+end;
+
+procedure TUmlagerung_T.PopupMenuPopup(Sender: TObject);
+begin
+   FDQuery.Close;
+   FDQuery.SQL.Text := ' select 1 from Umlagerung.[dbo].[pArtikel] (nolock) where [u] = 1';
+   FDQuery.Open;
+
+   actDelete.Enabled := FDQuery.RecordCount > 0;
 end;
 
 procedure TUmlagerung_T.SetCheckCount;
@@ -860,6 +943,12 @@ begin
    FDQuery.Open;
 
    edtKartons.EditValue := FDQuery.Fields[0].Value;
+end;
+
+procedure TUmlagerung_T.SetPosition;
+begin
+  TableView.Controller.TopRowIndex := FTopRowIndex ;
+  TableView.Controller.FocusedRowIndex  := FFocusedRowIndex;
 end;
 
 procedure TUmlagerung_T.setSumme;
@@ -916,13 +1005,6 @@ begin
     end;
 end;
 
-procedure TUmlagerung_T.TableViewCanFocusRecord(Sender: TcxCustomGridTableView;
-  ARecord: TcxCustomGridRecord; var AAllow: Boolean);
-begin
-  FCurRowIndex:= ARecord.Index;
-  FTopRowIndex:= TableView.Controller.TopRowIndex;
-end;
-
 procedure TUmlagerung_T.TableViewcArtNrSetStoredPropertyValue(
   Sender: TcxCustomGridTableItem; const AName: string; const AValue: Variant);
 begin
@@ -942,8 +1024,8 @@ end;
 procedure TUmlagerung_T.TableViewUMengePropertiesEditValueChanged(Sender: TObject);
 begin
   TableViewUMenge.DataBinding.DataController.Post();
-  TableView.Controller.TopRowIndex := FTopRowIndex ;
-  TableView.Controller.FocusedRowIndex  := FCurRowIndex;
+//  TableView.Controller.TopRowIndex := FTopRowIndex ;
+//  TableView.Controller.FocusedRowIndex  := FCurRowIndex;
 
   setKartons;
 end;

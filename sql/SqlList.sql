@@ -10,7 +10,7 @@ go
 --SQL CreateTable
 --pArtikel -    
 if OBJECT_ID('pArtikel') is not null
-  drop table pArtikel;          
+  drop table pArtikel;
 create table pArtikel 
     (   id                    numeric(18, 0) identity
        ,u                     bit default 0
@@ -43,6 +43,7 @@ create table pArtikel
        ,RQty                  int
        ,Datum                 date
        ,VPEMenge              float
+       ,kVaterArtikelName     nvarchar(510)
     );
                     
 create unique index pk1 on pArtikel(id);                   
@@ -72,6 +73,18 @@ create table tMark
     );
 create unique index ao1 on tMark(Spid, ID);
 grant all on tMark to public;
+
+
+--tMark -
+if OBJECT_ID('tArtikelDeleted') is null
+begin
+  create table tArtikelDeleted
+      (
+       kArtikel              int
+      );
+  create unique index ao1 on tArtikelDeleted(kArtikel);
+end
+grant all on tArtikelDeleted to public;
 go
 
 --SQL DeleteObject
@@ -119,17 +132,17 @@ SELECT
        art.[kArtikel]
       ,art.[cArtNr]
       ,ArtName.cName
-   ,case
-   when [Recommended replenishment qty] is NULL then NULL
-   when [Recommended replenishment qty] = 0 then NULL
-   when [nVPEMenge] is NULL then NULL
-   when [nVPEMenge] = 0 then NULL
-   else cast(cast([Recommended replenishment qty] as int)/[nVPEMenge] as decimal(10,2))
-   end  as Karton
+      ,case
+         when [Recommended replenishment qty] is NULL then NULL
+         when [Recommended replenishment qty] = 0 then NULL
+         when [nVPEMenge] is NULL then NULL
+         when [nVPEMenge] = 0 then NULL
+         else cast(cast([Recommended replenishment qty] as int)/[nVPEMenge] as decimal(10,2))
+       end  as Karton
       ,cast([Recommended replenishment qty] as int) [RQty]
 
       ,FORMAT(CONVERT(DATE, [Recommended ship date], 101), 'dd.MM.yyyy') as Datum
-     ,cast([nVPEMenge] as decimal(10,2)) as VPEMenge
+      ,cast([nVPEMenge] as decimal(10,2)) as VPEMenge
 
       ,fba.cSellerSKU as FBA
       ,(nQtyTotal - fba.nQtyUnsellable) 'FBA-Bestand'  --
@@ -153,21 +166,34 @@ SELECT
       ,art.[kWarengruppe]
       ,art.[kHersteller]
       ,art.[kVaterArtikel]
+      ,VaterArtName.cName kVaterArtikelName
       ,art.cBarcode
   FROM [eazybusiness].[dbo].[tArtikel] as art
 
 left Join (
-  SELECT [kArtikel]
-      ,[kSprache]
-      ,[kPlattform]
-      ,[kShop]
-      ,[cName]
-  FROM [eazybusiness].[dbo].[tArtikelBeschreibung]
-  where kSprache = 1
-  and kPlattform = 1
-  ) as ArtName
-  ON art.kArtikel = ArtName.kArtikel
+            SELECT [kArtikel]
+                  ,[kSprache]
+                  ,[kPlattform]
+                  ,[kShop]
+                  ,[cName]
+             FROM [eazybusiness].[dbo].[tArtikelBeschreibung]
+            where kSprache = 1
+              and kPlattform = 1
+          ) as ArtName
+       ON art.kArtikel = ArtName.kArtikel
 
+
+left Join (
+           SELECT [kArtikel]
+               ,[kSprache]
+               ,[kPlattform]
+               ,[kShop]
+               ,[cName]
+           FROM [eazybusiness].[dbo].[tArtikelBeschreibung]
+          where kSprache = 1
+            and kPlattform = 1
+          ) as VaterArtName
+       ON art.kVaterArtikel = VaterArtName.kArtikel
   ---------------------FBA Bestand, FBA Eingang, reserviert, defekt----------------------------------------
 inner join (
 
@@ -398,6 +424,7 @@ insert [pArtikel]
       ,[kWarengruppe]
       ,[kHersteller]
       ,[kVaterArtikel]
+      ,[kVaterArtikelName]
       ,[cBarcode]
       ,[Karton]
       ,[RQty]
@@ -427,12 +454,16 @@ select
       ,[kWarengruppe]
       ,[kHersteller]
       ,[kVaterArtikel]
+      ,[kVaterArtikelName]
       ,[cBarcode]
       ,[Karton]
       ,[RQty]
       ,[Datum]
       ,[VPEMenge]
   FROM [uml]
+ where not exists (select 1
+                     from tArtikelDeleted t (nolock)
+                    where t.kArtikel = uml.kArtikel)
 
 go
 

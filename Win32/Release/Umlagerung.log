@@ -1,0 +1,85 @@
+12.06.2024 19:54:04.067 Info [P:14956 T:10104] - Программа запущена
+12.06.2024 19:54:04.067 Info [P:14956 T:10104] -
+12.06.2024 19:54:04.467 Info [P:14956 T:10104] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:54:04.496 Info [P:14956 T:10104] - FTopRowIndex: -1 FCurRowIndex: -1
+12.06.2024 19:54:07.335 Info [P:14956 T:10104] - filter:  and kVaterArtikel = 10 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:54:46.507 Info [P:14956 T:10104] - filter:  and kVaterArtikel = 8748 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:54:49.366 Info [P:14956 T:10104] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:54:49.385 Info [P:14956 T:10104] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:54:54.156 Info [P:14956 T:10104] - filter:  and kVaterArtikel = 8820 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:54:57.586 Info [P:14956 T:10104] - filter:  and kVaterArtikel = 8807 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:02.396 Info [P:14956 T:10104] - filter:  and kVaterArtikel = 14029 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:16.406 Info [P:14956 T:10104] - filter:  and kHersteller = 22 and kVaterArtikel = 14029 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:20.588 Info [P:14956 T:10104] - filter:  and kHersteller = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:20.606 Info [P:14956 T:10104] - filter:  and kHersteller = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:22.016 Info [P:14956 T:10104] - filter:  and kHersteller = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:22.846 Info [P:14956 T:10104] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:22.871 Info [P:14956 T:10104] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:24.527 Info [P:14956 T:10104] - filter:  and kHersteller = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:55:39.226 Info [P:14956 T:10104] - Программа остановлена
+12.06.2024 19:58:43.486 Info [P:4116 T:9332] - Программа запущена
+12.06.2024 19:58:43.486 Info [P:4116 T:9332] -
+12.06.2024 19:58:43.856 Info [P:4116 T:9332] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:58:43.886 Info [P:4116 T:9332] - FTopRowIndex: -1 FCurRowIndex: -1
+12.06.2024 19:58:46.246 Info [P:4116 T:9332] - filter:  and kVaterArtikel = 10 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:58:48.426 Info [P:4116 T:9332] - filter:  and kVaterArtikel = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:58:50.166 Info [P:4116 T:9332] - filter:  and kVaterArtikel = 27 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:58:53.906 Info [P:4116 T:9332] - filter:  and kVaterArtikel = 8939 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:58:57.631 Info [P:4116 T:9332] - 5695
+12.06.2024 19:59:02.720 Info [P:4116 T:9332] - filter:  and kVaterArtikel = 8940 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:59:05.806 Info [P:4116 T:9332] - filter:  and kVaterArtikel = 8940 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:59:05.826 Info [P:4116 T:9332] - FTopRowIndex: 0 FCurRowIndex: -1
+12.06.2024 19:59:10.059 Info [P:4116 T:9332] - filter:  and kVaterArtikel = 8938 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:59:12.526 Info [P:4116 T:9332] - Программа остановлена
+12.06.2024 19:59:51.426 Info [P:9160 T:2576] - Программа запущена
+12.06.2024 19:59:51.426 Info [P:9160 T:2576] -
+12.06.2024 19:59:51.810 Info [P:9160 T:2576] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:59:51.836 Info [P:9160 T:2576] - FTopRowIndex: -1 FCurRowIndex: -1
+12.06.2024 20:00:07.826 Info [P:9160 T:2576] - filter:  and kVaterArtikel = 27 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:00:09.736 Info [P:9160 T:2576] - filter:  and kVaterArtikel = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:00:13.976 Info [P:9160 T:2576] - filter:  and kVaterArtikel = 13126 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:00:29.126 Info [P:9160 T:2576] - filter:  and kVaterArtikel = 13175 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:00:32.066 Info [P:9160 T:2576] - filter:  and kVaterArtikel = 13404 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:00:39.986 Info [P:9160 T:2576] - filter:  and kVaterArtikel = 37228 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:00:42.556 Info [P:9160 T:2576] - Программа остановлена
+12.06.2024 20:04:32.290 Info [P:14872 T:12784] - Программа запущена
+12.06.2024 20:04:32.290 Info [P:14872 T:12784] -
+12.06.2024 20:04:32.796 Info [P:14872 T:12784] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:04:32.816 Info [P:14872 T:12784] - FTopRowIndex: -1 FCurRowIndex: -1
+12.06.2024 20:04:40.827 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 37253 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:04:49.237 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 8827 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:00.568 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 17241 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:11.812 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 10 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:16.767 Info [P:14872 T:12784] - filter:  and kHersteller = 4 and kVaterArtikel = 10 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:17.951 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 10 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:17.964 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 10 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:19.227 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 10 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:19.597 Info [P:14872 T:12784] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:23.026 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:24.106 Info [P:14872 T:12784] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:05:24.151 Info [P:14872 T:12784] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:03.986 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 8703 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:06.786 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 8692 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:10.230 Info [P:14872 T:12784] - filter:  and kVaterArtikel = 8722 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:12.562 Info [P:14872 T:12784] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:12.625 Info [P:14872 T:12784] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:21.449 Info [P:14872 T:12784] - filter:  and kHersteller = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:33.506 Info [P:14872 T:12784] - filter:  and kHersteller = 22 and kVaterArtikel = 17145 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:37.987 Info [P:14872 T:12784] - filter:  and kHersteller = 22 and kVaterArtikel = 17153 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:41.927 Info [P:14872 T:12784] - filter:  and kHersteller = 22 and kVaterArtikel = 17217 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:44.322 Info [P:14872 T:12784] - filter:  and kHersteller = 22 and kVaterArtikel = 17217 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:45.427 Info [P:14872 T:12784] - filter:  and kHersteller = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:06:54.626 Info [P:14872 T:12784] - filter:  and kHersteller = 22 and kVaterArtikel = 27468 and UmlagDatum < {d 2024-06-05}
+12.06.2024 20:07:05.519 Info [P:14872 T:12784] - Программа остановлена
+13.06.2024 20:55:28.019 Info [P:6928 T:3960] - Программа запущена
+13.06.2024 20:55:28.019 Info [P:6928 T:3960] -
+13.06.2024 20:55:28.566 Info [P:6928 T:3960] - filter:  and UmlagDatum < {d 2024-06-06}
+13.06.2024 20:55:28.754 Info [P:6928 T:3960] - FTopRowIndex: -1 FCurRowIndex: -1
+13.06.2024 20:55:37.958 Info [P:6928 T:3960] - Программа остановлена
+13.06.2024 20:55:43.069 Info [P:9604 T:6004] - Программа запущена
+13.06.2024 20:55:43.069 Info [P:9604 T:6004] -
+13.06.2024 20:55:43.444 Info [P:9604 T:6004] - filter:  and UmlagDatum < {d 2024-06-06}
+13.06.2024 20:55:43.460 Info [P:9604 T:6004] - FTopRowIndex: -1 FCurRowIndex: -1
+13.06.2024 20:55:49.882 Info [P:9604 T:6004] - filter:  and UmlagDatum < {d 2024-06-06}
+13.06.2024 20:55:49.897 Info [P:9604 T:6004] - FTopRowIndex: 0 FCurRowIndex: 487
+13.06.2024 20:56:14.185 Info [P:9604 T:6004] - Программа остановлена

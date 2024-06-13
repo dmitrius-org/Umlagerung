@@ -1,0 +1,9 @@
+12.06.2024 19:56:13.996 Info [P:2752 T:1632] - Программа запущена
+12.06.2024 19:56:13.996 Info [P:2752 T:1632] -
+12.06.2024 19:56:14.506 Info [P:2752 T:1632] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:56:22.386 Info [P:2752 T:1632] - filter:  and kVaterArtikel = 10 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:56:24.260 Info [P:2752 T:1632] - filter:  and kVaterArtikel = 22 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:56:25.426 Info [P:2752 T:1632] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:56:25.475 Info [P:2752 T:1632] - filter:  and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:56:31.606 Info [P:2752 T:1632] - filter:  and kVaterArtikel = 8931 and UmlagDatum < {d 2024-06-05}
+12.06.2024 19:56:35.116 Info [P:2752 T:1632] - Программа остановлена
