@@ -9,6 +9,7 @@
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>Umlagerung.dpr</MainSource>
+        <ProjectName Condition="'$(ProjectName)'==''">Umlagerung</ProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -118,10 +119,6 @@
         <DCCReference Include="source\Umlagerung_U.pas">
             <Form>d</Form>
         </DCCReference>
-        <DCCReference Include="source\Prufen_U.pas">
-            <Form>Prufen_F</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="source\connection\ConnectionParamU.pas"/>
         <DCCReference Include="source\connection\dm.pas">
             <Form>DataModule1</Form>
@@ -135,6 +132,14 @@
         <DCCReference Include="source\logger\MTLogger.pas"/>
         <DCCReference Include="source\logger\MTUtils.pas"/>
         <DCCReference Include="source\logger\TimeIntervals.pas"/>
+        <DCCReference Include="source\uDeleted_T.pas">
+            <Form>Deleted_T</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="source\uLink_T.pas">
+            <Form>Link_T</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcItem Include="sql\SqlList.sql">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
@@ -850,6 +855,9 @@
                     <Platform Name="Win64">
                         <Operation>1</Operation>
                     </Platform>
+                    <Platform Name="Win64x">
+                        <Operation>1</Operation>
+                    </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectiOSDeviceDebug">
                     <Platform Name="iOSDevice32">
@@ -1142,6 +1150,7 @@
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win64x" Name="$(PROJECTNAME)"/>
             </Deployment>
             <Platforms>
                 <Platform value="Win32">True</Platform>

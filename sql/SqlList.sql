@@ -43,7 +43,7 @@ create table pArtikel
        ,RQty                  int
        ,Datum                 date
        ,VPEMenge              float
-       ,kVaterArtikelName     nvarchar(510)
+       ,Parent                nvarchar(510)
     );
                     
 create unique index pk1 on pArtikel(id);                   
@@ -57,7 +57,7 @@ create table pCheck
        ,cName                 nvarchar(510)
        ,[U-Menge]             int 
        ,[Gescant]             int 
-       ,cBarcode	          nvarchar(510)
+       ,cBarcode	            nvarchar(510)
     );
                     
 create unique index pk1 on pCheck(id);                   
@@ -68,23 +68,41 @@ if OBJECT_ID('tMark') is not null
   drop table tMark;          
 create table tMark 
     (
-     Spid	        numeric(18, 0) 
-    ,ID	            numeric(18, 0) 
+     Spid	        numeric(18, 0)
+    ,ID	          numeric(18, 0)
     );
 create unique index ao1 on tMark(Spid, ID);
 grant all on tMark to public;
 
 
---tMark -
+--tArtikelDeleted -
 if OBJECT_ID('tArtikelDeleted') is null
 begin
   create table tArtikelDeleted
       (
-       kArtikel              int
+       ID           int identity
+      ,kArtikel     int
       );
   create unique index ao1 on tArtikelDeleted(kArtikel);
 end
 grant all on tArtikelDeleted to public;
+
+--tLink--
+if OBJECT_ID('tLink') is null
+/* **********************************************************
+tLink -
+********************************************************** */
+begin
+  create table tLink
+  (
+   ID                     numeric(18,0)  identity
+  ,Parent                 nvarchar(128)
+  ,Link                   nvarchar(512)
+  );
+  grant all on tLink to public ;
+
+end
+
 go
 
 --SQL DeleteObject
@@ -132,17 +150,17 @@ SELECT
        art.[kArtikel]
       ,art.[cArtNr]
       ,ArtName.cName
-      ,case
-         when [Recommended replenishment qty] is NULL then NULL
-         when [Recommended replenishment qty] = 0 then NULL
-         when [nVPEMenge] is NULL then NULL
-         when [nVPEMenge] = 0 then NULL
-         else cast(cast([Recommended replenishment qty] as int)/[nVPEMenge] as decimal(10,2))
-       end  as Karton
+   ,case
+   when [Recommended replenishment qty] is NULL then NULL
+   when [Recommended replenishment qty] = 0 then NULL
+   when [nVPEMenge] is NULL then NULL
+   when [nVPEMenge] = 0 then NULL
+   else cast(cast([Recommended replenishment qty] as int)/[nVPEMenge] as decimal(10,2))
+   end  as Karton
       ,cast([Recommended replenishment qty] as int) [RQty]
 
       ,FORMAT(CONVERT(DATE, [Recommended ship date], 101), 'dd.MM.yyyy') as Datum
-      ,cast([nVPEMenge] as decimal(10,2)) as VPEMenge
+     ,cast([nVPEMenge] as decimal(10,2)) as VPEMenge
 
       ,fba.cSellerSKU as FBA
       ,(nQtyTotal - fba.nQtyUnsellable) 'FBA-Bestand'  --
@@ -166,34 +184,22 @@ SELECT
       ,art.[kWarengruppe]
       ,art.[kHersteller]
       ,art.[kVaterArtikel]
-      ,VaterArtName.cName kVaterArtikelName
       ,art.cBarcode
+      ,parent.cArtNr as Parent
   FROM [eazybusiness].[dbo].[tArtikel] as art
 
 left Join (
-            SELECT [kArtikel]
-                  ,[kSprache]
-                  ,[kPlattform]
-                  ,[kShop]
-                  ,[cName]
-             FROM [eazybusiness].[dbo].[tArtikelBeschreibung]
-            where kSprache = 1
-              and kPlattform = 1
-          ) as ArtName
-       ON art.kArtikel = ArtName.kArtikel
+  SELECT [kArtikel]
+      ,[kSprache]
+      ,[kPlattform]
+      ,[kShop]
+      ,[cName]
+  FROM [eazybusiness].[dbo].[tArtikelBeschreibung]
+  where kSprache = 1
+  and kPlattform = 1
+  ) as ArtName
+  ON art.kArtikel = ArtName.kArtikel
 
-
-left Join (
-           SELECT [kArtikel]
-               ,[kSprache]
-               ,[kPlattform]
-               ,[kShop]
-               ,[cName]
-           FROM [eazybusiness].[dbo].[tArtikelBeschreibung]
-          where kSprache = 1
-            and kPlattform = 1
-          ) as VaterArtName
-       ON art.kVaterArtikel = VaterArtName.kArtikel
   ---------------------FBA Bestand, FBA Eingang, reserviert, defekt----------------------------------------
 inner join (
 
@@ -387,13 +393,17 @@ On AmaBestelDatum.kAmazonBestellung = AmaBestellpos.kAmazonBestellung
    Left join [eazybusiness].[dbo].[tliefartikel] as liefart
           ON art.kArtikel = liefart.tArtikel_kArtikel
 
+----------------vaterartikel----------------------------------
+  LEFT JOIN [eazybusiness].[dbo].[tArtikel] parent
+         ON art.kVaterArtikel = parent.kArtikel
 
   ----------------------------------------------------------------
-  where kVaterArtikel > 0
-and kStueckliste = 0
+  where art.kVaterArtikel > 0
+    and art.kStueckliste = 0
 
 
 );
+
 go
 
 --SQL ArtikelLoad
@@ -424,7 +434,7 @@ insert [pArtikel]
       ,[kWarengruppe]
       ,[kHersteller]
       ,[kVaterArtikel]
-      ,[kVaterArtikelName]
+      ,[Parent]
       ,[cBarcode]
       ,[Karton]
       ,[RQty]
@@ -454,7 +464,7 @@ select
       ,[kWarengruppe]
       ,[kHersteller]
       ,[kVaterArtikel]
-      ,[kVaterArtikelName]
+      ,[Parent]
       ,[cBarcode]
       ,[Karton]
       ,[RQty]

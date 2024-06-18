@@ -13,24 +13,26 @@ uses
   dxDateRanges, dxScrollbarAnnotations, Data.DB, cxDBData, cxGridLevel,
   cxClasses, cxGridCustomView, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGrid,
-  Umlagerung_U, Prufen_U;
+  Umlagerung_U, uLink_T, dxBarBuiltInMenu, cxPC, uDeleted_T;
 
 type
   TForm1 = class(TForm)
     ApplicationEvents: TApplicationEvents;
     TrayIcon: TTrayIcon;
     cxImageList1: TcxImageList;
-    MainPage: TPageControl;
-    tsUmlagerung: TTabSheet;
-    tsSettings: TTabSheet;
-    tabCheck: TTabSheet;
+    cxPageControl1: TcxPageControl;
+    tsUmlagerung: TcxTabSheet;
+    tsLink: TcxTabSheet;
+    tsSettings: TcxTabSheet;
+    tsDeleted: TcxTabSheet;
     procedure TrayIconClick(Sender: TObject);
     procedure ApplicationEventsMinimize(Sender: TObject);
     procedure tsSettingsShow(Sender: TObject);
     procedure tsUmlagerungShow(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure tabCheckShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure tsLinkShow(Sender: TObject);
+    procedure tsDeletedShow(Sender: TObject);
   private
     { Private declarations }
 
@@ -44,7 +46,8 @@ var
 
   SettingForm: TSettings_F;
   Umlagerung: TUmlagerung_T;
-  Prufen_F: TPrufen_F;
+  Link : TLink_T;
+  Deleted: TDeleted_T;
 
 implementation
 
@@ -73,18 +76,6 @@ begin
   tsUmlagerung.Visible:=true;
 end;
 
-procedure TForm1.tabCheckShow(Sender: TObject);
-begin
-//  if not Assigned(Prufen_F) then
-//  begin
-//    Prufen_F := TPrufen_F.Create(Self);
-//    Prufen_F.BorderStyle := bsNone;
-//    Prufen_F.Parent := tabCheck;
-//    Prufen_F.Align := alClient;
-//    Prufen_F.Show;
-//  end;
-end;
-
 procedure TForm1.UmlagerungFormLoad;
 begin
   if not Assigned(Umlagerung) then
@@ -108,6 +99,32 @@ end;
 procedure TForm1.tsUmlagerungShow(Sender: TObject);
 begin
   UmlagerungFormLoad();
+end;
+
+procedure TForm1.tsDeletedShow(Sender: TObject);
+begin
+  if not Assigned(Deleted) then
+  begin
+    Deleted := TDeleted_T.Create(Self);
+    Deleted.BorderStyle := bsNone;
+    Deleted.Parent := tsDeleted;
+    Deleted.Align := alClient;
+    Deleted.Show;
+  end;
+
+  Deleted.Refresh;
+end;
+
+procedure TForm1.tsLinkShow(Sender: TObject);
+begin
+  if not Assigned(Link) then
+  begin
+    Link := TLink_T.Create(Self);
+    Link.BorderStyle := bsNone;
+    Link.Parent := tsLink;
+    Link.Align := alClient;
+    Link.Show;
+  end;
 end;
 
 procedure TForm1.tsSettingsShow(Sender: TObject);

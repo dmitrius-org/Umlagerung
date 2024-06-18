@@ -220,7 +220,9 @@ type
     Datensatzlschen1: TMenuItem;
     FDTablekVaterArtikelName: TWideStringField;
     TableViewkVaterArtikel: TcxGridDBColumn;
-    TableViewkVaterArtikelName: TcxGridDBColumn;
+    ParentArtikelName: TcxGridDBColumn;
+    actLink: TAction;
+    Openlink1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure btnDataLoadClick(Sender: TObject);
     procedure pmRefreshClick(Sender: TObject);
@@ -270,10 +272,13 @@ type
     procedure btnRQtyKartonVollClick(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
+    procedure actLinkExecute(Sender: TObject);
   private
     { Private declarations }
     FFocusedRowIndex:Integer;
     FTopRowIndex :Integer;
+
+    FLink: string;
 
     procedure GridUmlagerungRefresh();
     procedure UmlagerungDataLoad();
@@ -345,6 +350,11 @@ begin
 
   Grid.SetFocus;
 
+end;
+
+procedure TUmlagerung_T.actLinkExecute(Sender: TObject);
+begin
+  ShellExecute(Application.Handle,PChar('open'), PChar(FLink), PChar(0), nil, SW_NORMAL);
 end;
 
 procedure TUmlagerung_T.bntCheckedAllClearClick(Sender: TObject);
@@ -924,6 +934,15 @@ begin
    FDQuery.Open;
 
    actDelete.Enabled := FDQuery.RecordCount > 0;
+
+
+   FDQuery.Close;
+   FDQuery.SQL.Text := ' select Link from Umlagerung.[dbo].[tLink] (nolock) where [Parent] = :Parent';
+   FDQuery.ParamByName('Parent').Value := ParentArtikelName.EditValue;
+   FDQuery.Open;
+
+   actLink.Enabled := FDQuery.RecordCount > 0;
+   if FDQuery.RecordCount > 0 then FLink:=FDQuery.FieldByName('Link').Value;
 end;
 
 procedure TUmlagerung_T.SetCheckCount;
@@ -1024,9 +1043,6 @@ end;
 procedure TUmlagerung_T.TableViewUMengePropertiesEditValueChanged(Sender: TObject);
 begin
   TableViewUMenge.DataBinding.DataController.Post();
-//  TableView.Controller.TopRowIndex := FTopRowIndex ;
-//  TableView.Controller.FocusedRowIndex  := FCurRowIndex;
-
   setKartons;
 end;
 
