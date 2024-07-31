@@ -223,6 +223,7 @@ type
     ParentArtikelName: TcxGridDBColumn;
     actLink: TAction;
     Openlink1: TMenuItem;
+    FDTableFNSKU: TWideStringField;
     procedure FormCreate(Sender: TObject);
     procedure btnDataLoadClick(Sender: TObject);
     procedure pmRefreshClick(Sender: TObject);

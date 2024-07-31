@@ -21,7 +21,6 @@ object Umlagerung_T: TUmlagerung_T
     Height = 139
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 1642
     object dxPanel1: TdxPanel
       Left = 1
       Top = 1
@@ -31,7 +30,6 @@ object Umlagerung_T: TUmlagerung_T
       Frame.Borders = []
       Frame.DrawInNonClientArea = False
       TabOrder = 0
-      ExplicitWidth = 1640
       object btnDataLoad: TcxButton
         Left = 3
         Top = 5
@@ -390,8 +388,6 @@ object Umlagerung_T: TUmlagerung_T
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-    ExplicitWidth = 1642
-    ExplicitHeight = 420
     object Grid: TcxGrid
       Left = 1
       Top = 1
@@ -401,8 +397,6 @@ object Umlagerung_T: TUmlagerung_T
       TabOrder = 0
       LookAndFeel.Kind = lfFlat
       LookAndFeel.NativeStyle = False
-      ExplicitWidth = 1640
-      ExplicitHeight = 372
       object TableView: TcxGridDBTableView
         Navigator.Buttons.CustomButtons = <>
         ScrollbarAnnotations.CustomAnnotations = <>
@@ -686,8 +680,6 @@ object Umlagerung_T: TUmlagerung_T
       Height = 46
       Align = alBottom
       TabOrder = 1
-      ExplicitLeft = -264
-      ExplicitTop = 380
       object Label1: TLabel
         Left = 5
         Top = 16
@@ -1489,6 +1481,10 @@ object Umlagerung_T: TUmlagerung_T
     object FDTableVPEMenge: TFloatField
       FieldName = 'VPEMenge'
     end
+    object FDTableFNSKU: TWideStringField
+      FieldName = 'FNSKU'
+      Size = 100
+    end
   end
   object cxStyleRepository1: TcxStyleRepository
     Left = 72
@@ -1688,7 +1684,7 @@ object Umlagerung_T: TUmlagerung_T
     CloudDriveSettings.OneDriveSettings.DirectorySupport = True
     Left = 392
     Top = 326
-    Version = '22.0'
+    Version = '22.03'
     mmColumnWidth = 0
     DataPipelineName = 'ppDBPipeline39'
     object ppHeaderBand1: TppHeaderBand
@@ -1857,7 +1853,7 @@ object Umlagerung_T: TUmlagerung_T
     CloudDriveSettings.OneDriveSettings.DirectorySupport = True
     Left = 392
     Top = 390
-    Version = '22.0'
+    Version = '22.03'
     mmColumnWidth = 0
     DataPipelineName = 'ppDBreportA4'
     object ppHeaderBand2: TppHeaderBand

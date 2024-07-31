@@ -44,6 +44,7 @@ create table pArtikel
        ,Datum                 date
        ,VPEMenge              float
        ,Parent                nvarchar(510)
+       ,FNSKU	                nvarchar(100)
     );
                     
 create unique index pk1 on pArtikel(id);                   
@@ -186,6 +187,7 @@ SELECT
       ,art.[kVaterArtikel]
       ,art.cBarcode
       ,parent.cArtNr as Parent
+	  ,art.[cAmazonFNSKU] as FNSKU
   FROM [eazybusiness].[dbo].[tArtikel] as art
 
 left Join (
@@ -393,17 +395,15 @@ On AmaBestelDatum.kAmazonBestellung = AmaBestellpos.kAmazonBestellung
    Left join [eazybusiness].[dbo].[tliefartikel] as liefart
           ON art.kArtikel = liefart.tArtikel_kArtikel
 
-----------------vaterartikel----------------------------------
   LEFT JOIN [eazybusiness].[dbo].[tArtikel] parent
          ON art.kVaterArtikel = parent.kArtikel
 
   ----------------------------------------------------------------
   where art.kVaterArtikel > 0
-    and art.kStueckliste = 0
+    and art.kStueckliste = 0
 
 
 );
-
 go
 
 --SQL ArtikelLoad
@@ -440,6 +440,7 @@ insert [pArtikel]
       ,[RQty]
       ,[Datum]
       ,[VPEMenge]
+      ,[FNSKU]
 )
 select
        [kArtikel]
@@ -470,6 +471,7 @@ select
       ,[RQty]
       ,[Datum]
       ,[VPEMenge]
+      ,[FNSKU]
   FROM [uml]
  where not exists (select 1
                      from tArtikelDeleted t (nolock)
@@ -487,6 +489,7 @@ SELECT
       ,'Artikel'    [Positionstyp]
       ,p.[cArtNr]   [Artikelnummer]
       ,p.[FBA]      [Amazon SKU]
+      ,p.[FNSKU]    FNSKU
   FROM [pArtikel] p (nolock)
  Where p.[u] = 1
  order by p.[cArtNr]
