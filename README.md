@@ -2,5 +2,5 @@
 Umlagerung
 
 # Зависимости
-- Delphi 11.2 
-- ReportBuilder for Delphi 11.2 Alexandria
+- Delphi 12
+- ReportBuilder for Delphi 12 Alexandria
